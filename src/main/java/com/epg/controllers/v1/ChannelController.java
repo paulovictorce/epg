@@ -9,20 +9,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("${api.controller.version}")
+@RequestMapping("/channels")
 @RequiredArgsConstructor
 public class ChannelController {
 
     private final ChannelService channelService;
 
-    @GetMapping("/channels")
-    public ResponseEntity<List<Channel>> getAll() {
-        return channelService.getAll();
-    }
-
-    @PostMapping("/channels")
+    @PostMapping("/create")
     public ResponseEntity<Channel> save(@RequestBody Channel channel) {
         return channelService.save(channel);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Channel>> getAll() {
+        return channelService.getAll();
     }
 
 }
