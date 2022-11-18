@@ -16,7 +16,7 @@ public class ChannelController {
     private final ChannelService channelService;
 
     @PostMapping("/create")
-    public ResponseEntity<Channel> save(@RequestBody Channel channel) {
+    public ResponseEntity save(@RequestBody Channel channel) {
         return channelService.save(channel);
     }
 

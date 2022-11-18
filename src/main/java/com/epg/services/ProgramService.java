@@ -5,6 +5,7 @@ import com.epg.entities.Program;
 import com.epg.repositories.ChannelRepository;
 import com.epg.repositories.ProgramRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class ProgramService {
 
     private ResponseEntity programNotFoundedResponse = new ResponseEntity<>("Program not founded!",
             HttpStatus.NOT_FOUND);
+
+    private ResponseEntity validationProgramFailResponse = new ResponseEntity<>(
+            "The channelId, imageUrl, title, description, startTime and endTime fields must be informed", HttpStatus.BAD_REQUEST);
 
     public ResponseEntity<List<Program>> getAll() {
         List<Program> programList = programRepository.findAll();
@@ -62,6 +66,10 @@ public class ProgramService {
             return channelNotFoundedResponse;
         }
 
+        if (validateProgram(program)) {
+            return validationProgramFailResponse;
+        }
+
         return new ResponseEntity<>(programRepository.save(program), HttpStatus.CREATED);
     }
 
@@ -75,6 +83,10 @@ public class ProgramService {
 
         if (validateProgramChannel(program)) {
             return channelNotFoundedResponse;
+        }
+
+        if (validateProgram(program)) {
+            return validationProgramFailResponse;
         }
 
         program.setId(programOptional.get().getId());
@@ -104,5 +116,16 @@ public class ProgramService {
         }
 
         return true;
+    }
+
+    private boolean validateProgram(Program program) {
+
+        if (StringUtils.isEmpty(program.getChannelId()) || StringUtils.isEmpty(program.getImageUrl())
+                || StringUtils.isEmpty(program.getDescription()) || program.getStartTime() == null || program.getEndTime() == null) {
+            return true;
+        }
+
+        return false;
+
     }
 }
